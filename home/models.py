@@ -55,6 +55,7 @@ class Product(models.Model):
 	discounted_price = models.IntegerField(default = 0)
 	category = models.ForeignKey(Category,on_delete = models.CASCADE)
 	subcategory = models.ForeignKey(SubCategory,on_delete = models.CASCADE)
+	brand = models.ForeignKey(Brand,on_delete = models.CASCADE,default = 1)
 	image = models.ImageField(upload_to = 'media')
 	description = models.TextField(blank = True)
 	specification = models.TextField(blank = True)
