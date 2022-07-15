@@ -10,6 +10,16 @@ class Base(View):
 	views = {}
 	views['categories'] = Category.objects.all()
 	views['brands'] = Brand.objects.all()
+	all_brand = []
+	for i in Brand.objects.all():
+		ids = Brand.objects.get(name = i).id
+		
+		count = Product.objects.filter(brand =ids).count()
+		
+		all_brand.append({'product_count':count,'ids' : ids})
+		
+	views['counts'] = all_brand
+		
 
 class HomeView(Base):
 	def get(self,request):
@@ -28,17 +38,7 @@ class ProductDetailView(Base):
 		self.views['details'] = Product.objects.filter(slug = slug)
 		self.views['reviews'] = Review.objects.filter(slug = slug)
 		subcat = Product.objects.get(slug = slug).subcategory
-		all_brand = []
-		for i in Brand.objects.all():
-			ids = Brand.objects.get(name = i).id
-			# id_brand = Brand.objects.get(slug = slug).id
-			# all_brand[ids] = Product.objects.filter(brand =ids).count()
-			count = Product.objects.filter(brand =ids).count()
-			
-			all_brand.append({'product_count':count,'ids' : ids})
-			# self.views[i] = Brand.objects.filter(name = i).count()
-		self.views['counts'] = all_brand
-		print(all_brand)
+		
 		self.views['subcat_products'] = Product.objects.filter(subcategory = subcat)
 
 		return render(request,'product-detail.html',self.views)
@@ -61,3 +61,11 @@ def review(request):
 		data.save()
 
 	return redirect(f'/details/{slug}')
+
+
+class CategoryView(Base):
+	def get(self,request,slug):
+		self.views
+		cat_id = Category.objects.get(slug = slug).id
+		self.views['cat_product'] = Product.objects.filter(category_id = cat_id)
+		return render(request,'product-list.html',self.views)
