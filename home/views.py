@@ -69,3 +69,18 @@ class CategoryView(Base):
 		cat_id = Category.objects.get(slug = slug).id
 		self.views['cat_product'] = Product.objects.filter(category_id = cat_id)
 		return render(request,'product-list.html',self.views)
+
+class SearchView(Base):
+	def get(self,request):
+		self.views
+		if request.method == 'GET':
+			query = request.GET['query']
+			self.views['search_product'] = Product.objects.filter(name__icontains = query)
+			self.views['search_for'] = query
+		return render(request,'search.html',self.views)
+
+
+
+
+
+
