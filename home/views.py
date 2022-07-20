@@ -45,8 +45,10 @@ class ProductDetailView(Base):
 
 def review(request):
 	if request.method == 'POST':
-		name = request.POST['name']
-		email = request.POST['email']
+		# name = request.POST['name']
+		# email = request.POST['email']
+		name = request.user.username
+		email = request.user.email
 		review = request.POST['review']
 		slug = request.POST['slug']
 		x = datetime.datetime.now()
@@ -79,8 +81,57 @@ class SearchView(Base):
 			self.views['search_for'] = query
 		return render(request,'search.html',self.views)
 
+from django.contrib.auth.models import User
+from django.contrib  import messages,auth
+def signup(request):
+	if request.method == 'POST':
+		f_name = request.POST['first_name']
+		l_name = request.POST['last_name']
+		username = request.POST['username']
+		email = request.POST['email']
+		password = request.POST['password']
+		cpassword = request.POST['cpassword']
+		if password == cpassword:
+			if User.objects.filter(username =username).exists():
+				messages.error(request,'The username is already taken')
+				return redirect('/signup')
 
+			elif  User.objects.filter(email =email).exists():
+				messages.error(request,'The email is already taken')
+				return redirect('/signup')
+			else:
+				data = User.objects.create_user(
+					username = username,
+					email = email,
+					password = password,
+					first_name = f_name,
+					last_name = l_name
+					)
+				data.save()
+				return redirect('/')
+		else:
+			messages.error(request,'password does not match')
+			return redirect('/signup')
 
+	return render(request,'signup.html')
 
+from django.contrib.auth import login,logout
+def login(request):
+	if request.method == 'POST':
+		username = request.POST['username']
+		password = request.POST['password']
 
+		user = auth.authenticate(username = username,password=password)
+		if user is not None:
+			auth.login(request,user)
+			return redirect('/')
 
+		else:
+			messages.error(request,'The username or password does not match.')
+			return redirect('/login')
+
+	return render(request,'login.html')
+
+def logout(request):
+	auth.logout(request)
+	return redirect('/')

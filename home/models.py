@@ -73,6 +73,7 @@ class Review(models.Model):
 	review = models.TextField(blank = True)
 	date = models.CharField(max_length=200)
 	slug = models.TextField()
+	point = models.IntegerField(default = 1)
 
 
 	def __str__(self):

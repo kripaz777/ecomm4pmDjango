@@ -136,6 +136,7 @@
                                             </p>
                                         </div>
                                         {% endfor %}
+                                        {% if user.is_authenticated %}
                                         <div class="reviews-submit">
                                             <h4>Give your Review:</h4>
                                             <div class="ratting">
@@ -149,12 +150,12 @@
                                             {% csrf_token %}
                                             <div class="row form">
                                                 <div class="col-sm-6">
-                                                    <input name = "name" type="text" placeholder="Name">
+                                                    <!-- <input name = "name" type="text" placeholder="Name"> -->
                                                     <input name = "slug" type="hidden" value = "{{detail.slug}}">
                                                 </div>
-                                                <div class="col-sm-6">
+                                                <!-- <div class="col-sm-6">
                                                     <input name = "email" type="email" placeholder="Email">
-                                                </div>
+                                                </div> -->
                                                 <div class="col-sm-12">
                                                 <textarea name = "review" placeholder="Review"></textarea>
                                                 </div>
@@ -164,6 +165,7 @@
                                             </div>
                                         </form>
                                         </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
