@@ -135,3 +135,41 @@ def login(request):
 def logout(request):
 	auth.logout(request)
 	return redirect('/')
+
+def cal(slug):
+	price = Product.objects.get(slug = slug).price
+	discounted_price = Product.objects.get(slug = slug).discounted_price
+	if discounted_price >0 :
+		actual_price = discounted_price
+	else:
+		actual_price = price
+	try:
+		quantity = Cart.objects.get(slug = slug).quantity
+	except:
+		return actual_price
+
+
+	return quantity,actual_price
+
+def add_to_cart(request,slug):
+	username = request.user.username
+	if Cart.objects.filter(slug = slug,username = username,checkout = False).exists():
+		quantity,actual_price = cal(slug)
+		quantity = quantity+1
+		total = actual_price*quantity
+
+		Cart.objects.filter(slug = slug,username = username,checkout = False).update(
+			quantity = quantity,
+			total = total
+			)
+	else:
+		actual_price= cal(slug)
+		data = Cart.objects.create(
+			username = username,
+			slug = slug,
+			total= actual_price,
+			items = Product.objects.filter(slug = slug)[0]
+			)
+		data.save()
+	return redirect('/')
+
